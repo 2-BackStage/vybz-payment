@@ -1,4 +1,4 @@
-package back.vybz.paymentservice.common;
+package back.vybz.paymentservice.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
