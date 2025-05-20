@@ -1,5 +1,6 @@
 package back.vybz.paymentservice.user.domain.mysql;
 
+import back.vybz.paymentservice.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "member_ship")
 @Getter
 @NoArgsConstructor
-public class MemberShip {
+public class MemberShip extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

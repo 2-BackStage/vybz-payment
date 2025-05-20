@@ -1,5 +1,6 @@
 package back.vybz.paymentservice.user.domain.mysql;
 
+import back.vybz.paymentservice.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "donation_message")
 @Getter
 @NoArgsConstructor
-public class DonationMessage {
+public class DonationMessage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
