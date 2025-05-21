@@ -1,5 +1,6 @@
 package back.vybz.paymentservice.busker.domain.mongodb;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
@@ -29,4 +30,12 @@ public class DonationReceivedMongo {
     @Field(name = "total_received_amount")
     private Long totalReceivedAmount;
 
+    @Builder
+    public DonationReceivedMongo(ObjectId id, String buskerUuid,
+                                 List<DonationUser> donationUser, Long totalReceivedAmount) {
+        this.id = id;
+        this.buskerUuid = buskerUuid;
+        this.donationUser = donationUser;
+        this.totalReceivedAmount = totalReceivedAmount;
+    }
 }
