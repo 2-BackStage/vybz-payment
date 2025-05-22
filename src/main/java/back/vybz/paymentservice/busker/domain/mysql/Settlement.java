@@ -1,6 +1,7 @@
 package back.vybz.paymentservice.busker.domain.mysql;
 
 import back.vybz.paymentservice.common.entity.BaseEntity;
+import back.vybz.paymentservice.common.entity.SoftDeletableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "settlement")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Settlement extends BaseEntity {
+public class Settlement extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
