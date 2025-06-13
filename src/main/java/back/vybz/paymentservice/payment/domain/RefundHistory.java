@@ -21,9 +21,6 @@ public class RefundHistory extends BaseEntity {
     @Column(name = "user_uuid", nullable = false)
     private String userUuid;
 
-    @Column(name = "payment_uuid", nullable = false)
-    private String paymentUuid;
-
     // 결제 키
     @Column(name = "payment_key", nullable = false)
     private String paymentKey;
@@ -34,9 +31,9 @@ public class RefundHistory extends BaseEntity {
 
     // 환불 사유
     @Column(name = "reason", nullable = false, length = 200)
-    private String reason;
+    private String cancelReason;
 
-    // 환불된 금액 (단위: 원)
+    // 환불 금액 (단위: 원)
     @Column(name = "refund_amount", nullable = false)
     private Integer refundAmount;
 
@@ -58,15 +55,14 @@ public class RefundHistory extends BaseEntity {
     private LocalDateTime completedAt;
 
     @Builder
-    public RefundHistory(Long id, String userUuid, String paymentUuid, String paymentKey,
-                         String orderId, String reason, Integer refundAmount, String failCode,
+    public RefundHistory(Long id, String userUuid, String paymentKey,
+                         String orderId, String cancelReason, Integer refundAmount, String failCode,
                          RefundStatus refundStatus, LocalDateTime refundAt, LocalDateTime completedAt) {
         this.id = id;
         this.userUuid = userUuid;
-        this.paymentUuid = paymentUuid;
         this.paymentKey = paymentKey;
         this.orderId = orderId;
-        this.reason = reason;
+        this.cancelReason = cancelReason;
         this.refundAmount = refundAmount;
         this.failCode = failCode;
         this.refundStatus = refundStatus;

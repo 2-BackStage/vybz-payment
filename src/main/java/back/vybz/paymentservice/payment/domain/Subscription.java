@@ -24,8 +24,13 @@ public class Subscription extends BaseEntity {
     @Column(name = "busker_uuid", nullable = false)
     private String buskerUuid;
 
+    // toss billingKey
     @Column(name = "toss_billing_key", nullable = false)
     private String tossBillingKey;
+
+    // 고객 식별 키
+    @Column(name = "customer_key", nullable = false)
+    private String customerKey;
 
     // 정기 결제 요금 (고정 가격)
     @Column(name = "price", nullable = false)
@@ -53,13 +58,14 @@ public class Subscription extends BaseEntity {
     private LocalDateTime nextPaymentAt;
 
     @Builder
-    public Subscription(Long id, String userUuid, String buskerUuid, String tossBillingKey,
+    public Subscription(Long id, String userUuid, String buskerUuid, String tossBillingKey, String customerKey,
                         Integer price, Integer failCount, SubscriptionStatus subscriptionStatus,
                         LocalDateTime canceledAt, LocalDateTime lastPaymentAt, LocalDateTime nextPaymentAt) {
         this.id = id;
         this.userUuid = userUuid;
         this.buskerUuid = buskerUuid;
         this.tossBillingKey = tossBillingKey;
+        this.customerKey = customerKey;
         this.price = price;
         this.failCount = failCount;
         this.subscriptionStatus = subscriptionStatus;

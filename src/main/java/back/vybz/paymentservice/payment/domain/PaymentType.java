@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PaymentType {
 
-    CHARGE("충전"),
+    CHARGE("v-티켓 충전"),
     MEMBERSHIP("멤버십");
 
     private final String paymentType;
