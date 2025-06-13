@@ -7,9 +7,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PaymentStatus {
 
-    PENDING("대기"),
-    SUCCESS("성공"),
-    FAILED("실패");
+    READY("준비"),
+    IN_PROGRESS("진행 중"),
+    WAITING_FOR_DEPOSIT("입금 대기 중"),
+    DONE("결제 완료"),
+    CANCELED("취소됨"),
+    PARTIAL_CANCELED("부분 취소됨"),
+    ABORTED("승인 실패"),
+    EXPIRED("만료됨");
 
     private final String description;
 }
