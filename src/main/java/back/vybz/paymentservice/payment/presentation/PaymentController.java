@@ -27,8 +27,8 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     // 결제 생성
-    @PostMapping
     @Operation(summary = "결제 생성 API", description = "결제 생성(결제창 호출) API 입니다.", tags = {"Payment-Service"})
+    @PostMapping
     public BaseResponseEntity<ResponsePaymentCreateVo> addPayment(
             @RequestBody RequestPaymentCreateVo requestPaymentCreateVo)
     {
@@ -39,8 +39,8 @@ public class PaymentController {
     }
 
     // 결제 요청
-    @PostMapping("/confirm")
     @Operation(summary = "결제 승인 API", description = "결제 승인 API 입니다.", tags = {"Payment-Service"})
+    @PostMapping("/confirm")
     public BaseResponseEntity<ResponsePaymentConfirmVo> updatePayment(
             @RequestBody RequestPaymentConfirmVo requestPaymentConfirmVo
             ) {
@@ -51,8 +51,8 @@ public class PaymentController {
     }
 
     // 결제 실패
-    @PostMapping("/fail")
     @Operation(summary = "결제 실패 API", description = "결제 실패 API 입니다.", tags = {"Payment-Service"})
+    @PostMapping("/fail")
     public BaseResponseEntity<Void> failPayment(@RequestBody RequestPaymentFailVo requestPaymentFailVo) {
 
         paymentService.markAsFailedPayment(RequestPaymentFailDto.from(requestPaymentFailVo));
@@ -61,8 +61,8 @@ public class PaymentController {
     }
 
     // 환불 (= 결제 취소)
-    @PostMapping("/{paymentKey}/cancel")
     @Operation(summary = "결제 취소 API", description = "결제 취소 API 입니다.", tags = {"Payment-Service"})
+    @PostMapping("/{paymentKey}/cancel")
     public BaseResponseEntity<Void> cancelPayment(
             @PathVariable("paymentKey") String paymentKey,
             @RequestBody RequestPaymentCancelVo requestPaymentCancelVo

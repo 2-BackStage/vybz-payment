@@ -36,7 +36,7 @@ public class Payment extends BaseEntity {
     private String orderName;
 
     // 주문 ID
-    @Column(name = "order_id", length = 100)
+    @Column(name = "order_id", nullable = false, unique = true, length = 100)
     private String orderId;
 
     // 결제 수단

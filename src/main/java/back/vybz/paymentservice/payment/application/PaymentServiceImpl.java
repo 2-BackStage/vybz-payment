@@ -285,6 +285,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Transactional
+    @Override
     public void markAsFailedPayment(RequestPaymentFailDto requestPaymentFailDto) {
         Payment payment = paymentRepository.findByOrderId(requestPaymentFailDto.getOrderId())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PAYMENT_NO_EXIST));
