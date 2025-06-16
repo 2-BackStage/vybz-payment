@@ -2,10 +2,9 @@ package back.vybz.paymentservice.payment.application;
 
 import back.vybz.paymentservice.common.entity.BaseResponseStatus;
 import back.vybz.paymentservice.common.exception.BaseException;
-import back.vybz.paymentservice.payment.domain.Payment;
-import back.vybz.paymentservice.payment.domain.PaymentStatus;
-import back.vybz.paymentservice.payment.domain.RefundHistory;
-import back.vybz.paymentservice.payment.domain.RefundStatus;
+import back.vybz.paymentservice.kafka.event.PaymentConfirmEvent;
+import back.vybz.paymentservice.kafka.producer.PaymentConfirmProducer;
+import back.vybz.paymentservice.payment.domain.*;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentCancelDto;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentConfirmDto;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentCreateDto;
@@ -43,6 +42,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final TossHeaderHelper tossHeaderHelper;
 
     private final RestTemplate restTemplate;
+
+    private final PaymentConfirmProducer paymentConfirmProducer;
 
     private static final int TICKET_UNIT_PRICE = 110;
 
@@ -175,7 +176,10 @@ public class PaymentServiceImpl implements PaymentService {
 
             System.out.println("📂 ticketCount 확인:  " + ticketCount);
 
-            // TODO: kafka producer 처리 예정
+            paymentConfirmProducer.sendPaymentConfirmEvent(PaymentConfirmEvent.builder()
+                    .ticketCount(ticketCount)
+                    .userUuid(requestPaymentConfirmDto.getUserUuid())
+                    .build());
 
             return ResponsePaymentConfirmDto.builder()
                     .paymentKey(paymentKey)
