@@ -1,5 +1,7 @@
 package back.vybz.paymentservice.payment.presentation;
 
+import back.vybz.paymentservice.common.dto.request.RequestPageDTO;
+import back.vybz.paymentservice.common.dto.response.ResponsePageDTO;
 import back.vybz.paymentservice.common.entity.BaseResponseEntity;
 import back.vybz.paymentservice.common.entity.BaseResponseStatus;
 import back.vybz.paymentservice.payment.application.PaymentService;
@@ -9,16 +11,20 @@ import back.vybz.paymentservice.payment.dto.request.RequestPaymentCreateDto;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentFailDto;
 import back.vybz.paymentservice.payment.dto.response.ResponsePaymentConfirmDto;
 import back.vybz.paymentservice.payment.dto.response.ResponsePaymentCreateDto;
+import back.vybz.paymentservice.payment.dto.response.ResponsePaymentHistoryDto;
 import back.vybz.paymentservice.payment.vo.request.RequestPaymentCancelVo;
 import back.vybz.paymentservice.payment.vo.request.RequestPaymentConfirmVo;
 import back.vybz.paymentservice.payment.vo.request.RequestPaymentCreateVo;
 import back.vybz.paymentservice.payment.vo.request.RequestPaymentFailVo;
 import back.vybz.paymentservice.payment.vo.response.ResponsePaymentConfirmVo;
 import back.vybz.paymentservice.payment.vo.response.ResponsePaymentCreateVo;
+import back.vybz.paymentservice.payment.vo.response.ResponsePaymentHistoryVo;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payment")
@@ -62,7 +68,7 @@ public class PaymentController {
 
     // 환불 (= 결제 취소)
     @Operation(summary = "결제 취소 API", description = "결제 취소 API 입니다.", tags = {"Payment-Service"})
-    @PostMapping("/{paymentKey}/cancel")
+    @PostMapping("/refund/{paymentKey}")
     public BaseResponseEntity<Void> cancelPayment(
             @PathVariable("paymentKey") String paymentKey,
             @RequestBody RequestPaymentCancelVo requestPaymentCancelVo
@@ -72,5 +78,31 @@ public class PaymentController {
         paymentService.cancelPayment(paymentKey, requestPaymentCancelDto);
 
         return new BaseResponseEntity<>(BaseResponseStatus.SUCCESS, "결제 취소 되었습니다.");
+    }
+
+    // 결제 내역 조회
+    @Operation(summary = "결제 내역 조회 API", description = "결제 내역 조회 API 입니다.", tags = {"Payment-Service"})
+    @GetMapping("/{userUuid}")
+    public BaseResponseEntity<ResponsePageDTO<ResponsePaymentHistoryVo>> getPaymentHistory(
+            @PathVariable String userUuid,
+            @ModelAttribute RequestPageDTO requestPageDTO
+    ) {
+
+        ResponsePageDTO<ResponsePaymentHistoryDto> responsePageDTO = paymentService.getPaymentHistory(userUuid, requestPageDTO);
+
+        ResponsePageDTO<ResponsePaymentHistoryVo> result = ResponsePageDTO.<ResponsePaymentHistoryVo>builder()
+                .type("USE")
+                .dtoList(
+                        responsePageDTO.getDtoList().stream()
+                                .map(ResponsePaymentHistoryDto::toResponsePaymentHistoryVo)
+                                .toList()
+                )
+                .requestPageDTO(responsePageDTO.getRequestPageDTO())
+                .totalCount(responsePageDTO.getTotalCount())
+                .build();
+
+        log.info("result 확인 : {} ", responsePageDTO.getRequestPageDTO());
+
+        return new BaseResponseEntity<>(BaseResponseStatus.SUCCESS, result);
     }
 }

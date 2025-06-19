@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PaymentConfirmEvent {
+public class PaymentRefundEvent {
 
     private String userUuid;
 
@@ -15,7 +15,7 @@ public class PaymentConfirmEvent {
     private Integer amount;
 
     @Builder
-    public PaymentConfirmEvent(String userUuid, Integer ticketCount, Integer amount) {
+    public PaymentRefundEvent(String userUuid, Integer ticketCount, Integer amount) {
         this.userUuid = userUuid;
         this.ticketCount = ticketCount;
         this.amount = amount;

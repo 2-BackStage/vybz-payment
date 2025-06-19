@@ -19,13 +19,6 @@ public class ResponsePaymentCreateDto {
         this.orderId = orderId;
     }
 
-    public static ResponsePaymentCreateDto from(ResponsePaymentCreateVo responsePaymentCreateVo) {
-        return ResponsePaymentCreateDto.builder()
-                .checkoutUrl(responsePaymentCreateVo.getCheckoutUrl())
-                .orderId(responsePaymentCreateVo.getOrderId())
-                .build();
-    }
-
     public ResponsePaymentCreateVo toVo() {
         return ResponsePaymentCreateVo.builder()
                 .checkoutUrl(checkoutUrl)
