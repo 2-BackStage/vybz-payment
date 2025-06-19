@@ -1,6 +1,7 @@
 package back.vybz.paymentservice.kafka.config;
 
 import back.vybz.paymentservice.kafka.event.PaymentConfirmEvent;
+import back.vybz.paymentservice.kafka.event.PaymentRefundEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,13 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class PaymentConfirmKafkaConfig {
+public class PaymentKafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> userPaymentConfirmConfigs() {
+    public Map<String, Object> userPaymentConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -31,11 +32,21 @@ public class PaymentConfirmKafkaConfig {
 
     @Bean
     public ProducerFactory<String, PaymentConfirmEvent> createPaymentConfirmNotification() {
-        return new DefaultKafkaProducerFactory<>(userPaymentConfirmConfigs());
+        return new DefaultKafkaProducerFactory<>(userPaymentConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, PaymentConfirmEvent> kafkaTemplate() {
+    public KafkaTemplate<String, PaymentConfirmEvent> paymentConfirmKafkaTemplate() {
         return new KafkaTemplate<>(createPaymentConfirmNotification());
+    }
+
+    @Bean
+    public ProducerFactory<String, PaymentRefundEvent> createPaymentRefundNotification() {
+        return new DefaultKafkaProducerFactory<>(userPaymentConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<String, PaymentRefundEvent> paymentRefundKafkaTemplate() {
+        return new KafkaTemplate<>(createPaymentRefundNotification());
     }
 }

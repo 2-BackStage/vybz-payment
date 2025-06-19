@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class PaymentConfirmProducer {
 
-    private final KafkaTemplate<String, PaymentConfirmEvent> kafkaTemplate;
+    private final KafkaTemplate<String, PaymentConfirmEvent> paymentConfirmKafkaTemplate;
 
     public static final String CREATE_USER_TOPIC = "create-payment-confirm";
 
@@ -22,7 +22,7 @@ public class PaymentConfirmProducer {
         log.info("[Kafka] Sending PaymentConfirmEvent to topic '{}': {}", CREATE_USER_TOPIC, paymentConfirmEvent);
 
         try {
-            CompletableFuture<SendResult<String, PaymentConfirmEvent>> future = kafkaTemplate.send(CREATE_USER_TOPIC, paymentConfirmEvent);
+            CompletableFuture<SendResult<String, PaymentConfirmEvent>> future = paymentConfirmKafkaTemplate.send(CREATE_USER_TOPIC, paymentConfirmEvent);
 
             future.whenComplete((result, ex) -> {
                 if (ex != null) {

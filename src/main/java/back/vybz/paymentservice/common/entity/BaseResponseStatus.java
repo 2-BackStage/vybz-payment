@@ -67,10 +67,10 @@ public enum BaseResponseStatus {
     SSE_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, false, 901, "알림 전송에 실패하였습니다."),
     LOGIN_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, false, 902, "로그인에 실패하였습니다."),
 
-
     /**
      * Request 유효성 에러
      */
+    NO_EXIST_USER(HttpStatus.NOT_FOUND, false, 1001, "존재하지 않는 사용자입니다."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, false, 1000, "잘못된 요청입니다.");
 
     private final HttpStatusCode httpStatusCode;

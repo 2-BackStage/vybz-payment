@@ -1,9 +1,13 @@
 package back.vybz.paymentservice.payment.application;
 
+import back.vybz.paymentservice.common.dto.request.RequestPageDTO;
+import back.vybz.paymentservice.common.dto.response.ResponsePageDTO;
 import back.vybz.paymentservice.common.entity.BaseResponseStatus;
 import back.vybz.paymentservice.common.exception.BaseException;
 import back.vybz.paymentservice.kafka.event.PaymentConfirmEvent;
+import back.vybz.paymentservice.kafka.event.PaymentRefundEvent;
 import back.vybz.paymentservice.kafka.producer.PaymentConfirmProducer;
+import back.vybz.paymentservice.kafka.producer.PaymentRefundProducer;
 import back.vybz.paymentservice.payment.domain.*;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentCancelDto;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentConfirmDto;
@@ -11,6 +15,7 @@ import back.vybz.paymentservice.payment.dto.request.RequestPaymentCreateDto;
 import back.vybz.paymentservice.payment.dto.request.RequestPaymentFailDto;
 import back.vybz.paymentservice.payment.dto.response.ResponsePaymentConfirmDto;
 import back.vybz.paymentservice.payment.dto.response.ResponsePaymentCreateDto;
+import back.vybz.paymentservice.payment.dto.response.ResponsePaymentHistoryDto;
 import back.vybz.paymentservice.payment.infrastructure.PaymentRepository;
 import back.vybz.paymentservice.payment.infrastructure.RefundHistoryRepository;
 import back.vybz.paymentservice.payment.util.TossHeaderHelper;
@@ -20,6 +25,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -28,7 +38,9 @@ import org.springframework.http.*;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,6 +56,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final RestTemplate restTemplate;
 
     private final PaymentConfirmProducer paymentConfirmProducer;
+
+    private final PaymentRefundProducer paymentRefundProducer;
 
     private static final int TICKET_UNIT_PRICE = 110;
 
@@ -179,6 +193,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentConfirmProducer.sendPaymentConfirmEvent(PaymentConfirmEvent.builder()
                     .ticketCount(ticketCount)
                     .userUuid(requestPaymentConfirmDto.getUserUuid())
+                    .amount(requestPaymentConfirmDto.getAmount())
                     .build());
 
             return ResponsePaymentConfirmDto.builder()
@@ -246,6 +261,12 @@ public class PaymentServiceImpl implements PaymentService {
 
             payment.cancel();
 
+            paymentRefundProducer.sendPaymentRefundEvent(PaymentRefundEvent.builder()
+                    .userUuid(payment.getUserUuid())
+                    .ticketCount(payment.getAmount()/TICKET_UNIT_PRICE)
+                    .amount(payment.getAmount())
+                    .build());
+
             RefundHistory refundHistory = RefundHistory.builder()
                     .userUuid(payment.getUserUuid())
                     .paymentKey(payment.getPaymentKey())
@@ -270,5 +291,41 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PAYMENT_NO_EXIST));
 
         payment.failPayment(requestPaymentFailDto.getFailCode(), requestPaymentFailDto.getFailReason());
+    }
+
+    // 구매 내역 조회
+    @Override
+    public ResponsePageDTO<ResponsePaymentHistoryDto> getPaymentHistory(String userUuid, RequestPageDTO pageRequestDTO) {
+
+        if(!paymentRepository.existsByUserUuid(userUuid)) {
+            throw new BaseException(BaseResponseStatus.NO_EXIST_USER);
+        }
+
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage() -1,
+                pageRequestDTO.getSize(),
+                Sort.by(Sort.Direction.DESC, "approvedAt")
+        );
+
+        Page<Payment> pageResult = paymentRepository.findByUserUuidAndPaymentStatusAndApprovedAtIsNotNull(
+                userUuid, PaymentStatus.DONE, pageable
+        );
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        List<ResponsePaymentHistoryDto> dtoList = pageResult.getContent().stream()
+                .map(payment -> ResponsePaymentHistoryDto.builder()
+                        .amount(payment.getAmount())
+                        .ticketCount(payment.getAmount() / TICKET_UNIT_PRICE)
+                        .approvedAt(payment.getApprovedAt().format(dateTimeFormatter))
+                        .build()
+                ).toList();
+
+        return ResponsePageDTO.<ResponsePaymentHistoryDto>builder()
+                .type("USER")
+                .dtoList(dtoList)
+                .requestPageDTO(pageRequestDTO)
+                .totalCount(pageResult.getTotalElements())
+                .build();
     }
 }
