@@ -18,7 +18,7 @@ import back.vybz.paymentservice.payment.dto.response.ResponsePaymentCreateDto;
 import back.vybz.paymentservice.payment.dto.response.ResponsePaymentHistoryDto;
 import back.vybz.paymentservice.payment.infrastructure.PaymentRepository;
 import back.vybz.paymentservice.payment.infrastructure.RefundHistoryRepository;
-import back.vybz.paymentservice.payment.util.TossHeaderHelper;
+import back.vybz.paymentservice.common.util.TossHeaderHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -29,7 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -40,7 +39,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -59,8 +57,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRefundProducer paymentRefundProducer;
 
-    private static final int TICKET_UNIT_PRICE = 110;
-
     @Value("${payment.base-url}")
     private String baseUrl;
 
@@ -70,6 +66,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Value("${payment.fail-url}")
     private String failUrl;
 
+    @Value("${ticket.amount}")
+    private Integer ticketAmount;
+
+
     // 결제 생성
     @Override
     public ResponsePaymentCreateDto addPayment(RequestPaymentCreateDto requestPaymentCreateDto) {
@@ -77,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = requestPaymentCreateDto.toEntity();
         payment.markRequestedAt(LocalDateTime.now());
 
-        paymentRepository.save(payment);
+        paymentRepository.save(payment);  // save 따로 로직 뺴야 함
 
         HttpHeaders headers = tossHeaderHelper.createAuthHeaders();
 
@@ -186,7 +186,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             payment.approve(paymentKey, method, approvedAt);
 
-            int ticketCount = payment.getAmount() / TICKET_UNIT_PRICE;
+            int ticketCount = payment.getAmount() / ticketAmount;
 
             System.out.println("📂 ticketCount 확인:  " + ticketCount);
 
@@ -263,7 +263,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             paymentRefundProducer.sendPaymentRefundEvent(PaymentRefundEvent.builder()
                     .userUuid(payment.getUserUuid())
-                    .ticketCount(payment.getAmount()/TICKET_UNIT_PRICE)
+                    .ticketCount(payment.getAmount()/ticketAmount)
                     .amount(payment.getAmount())
                     .build());
 
@@ -316,7 +316,7 @@ public class PaymentServiceImpl implements PaymentService {
         List<ResponsePaymentHistoryDto> dtoList = pageResult.getContent().stream()
                 .map(payment -> ResponsePaymentHistoryDto.builder()
                         .amount(payment.getAmount())
-                        .ticketCount(payment.getAmount() / TICKET_UNIT_PRICE)
+                        .ticketCount(payment.getAmount() / ticketAmount)
                         .approvedAt(payment.getApprovedAt().format(dateTimeFormatter))
                         .build()
                 ).toList();

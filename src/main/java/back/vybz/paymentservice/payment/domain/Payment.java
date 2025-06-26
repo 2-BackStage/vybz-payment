@@ -118,7 +118,7 @@ public class Payment extends BaseEntity {
     }
 
     public void markAborted() {
-        this.paymentStatus = PaymentStatus.ABORTED;
+        this.paymentStatus = PaymentStatus.EXPIRED;
     }
 
     public void cancel() {

@@ -1,6 +1,5 @@
 package back.vybz.paymentservice.kafka.producer;
 
-import back.vybz.paymentservice.kafka.event.PaymentConfirmEvent;
 import back.vybz.paymentservice.kafka.event.PaymentRefundEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
