@@ -1,4 +1,4 @@
-package back.vybz.paymentservice.payment.util;
+package back.vybz.paymentservice.common.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

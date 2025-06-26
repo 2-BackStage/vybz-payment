@@ -1,4 +1,4 @@
-package back.vybz.paymentservice.payment.domain;
+package back.vybz.paymentservice.subscription.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SubscriptionStatus {
 
-    ACTIVE("승인"),
+    READY("준비중"),
+    ACTIVE("구독"),
     CANCELED("취소");
 
     private final String subscriptionStatus;

@@ -59,6 +59,9 @@ public enum BaseResponseStatus {
     PAYMENT_CANCEL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, false, 7113, "결제 환불 처리에 실패했습니다."),
     PAYMENT_CANCEL_ALREADY_REQUESTED(HttpStatus.BAD_REQUEST, false, 7114, "이미 환불이 요청된 결제입니다."),
 
+    ALREADY_SUBSCRIBED_TO_BUSKER(HttpStatus.BAD_REQUEST, false, 7210, "이미 구독 중인 버스커입니다."),
+    ALREADY_REGISTERED_BILLING_KEY(HttpStatus.BAD_REQUEST, false, 7115, "이미 등록된 BillingKey입니다."),
+
 
     /**
      * 900: 기타 에러
@@ -66,6 +69,11 @@ public enum BaseResponseStatus {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 900, "Internal server error"),
     SSE_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, false, 901, "알림 전송에 실패하였습니다."),
     LOGIN_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, false, 902, "로그인에 실패하였습니다."),
+    SUBSCRIPTION_NOT_FOUND(HttpStatus.NOT_FOUND, false, 4041, "구독 정보를 찾을 수 없습니다."),
+    TOSS_PAYMENT_FAILED(HttpStatus.BAD_GATEWAY, false, 4500, "Toss 결제 요청에 실패했습니다."),
+    TOSS_PAYMENT_SUCCESS_BUT_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, false, 4501, "결제는 성공했지만 후속 처리에 실패했습니다."),
+    BILLING_BATCH_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, false, 4502, "정기결제 배치 실행에 실패하였습니다."),
+    ALREADY_CANCELED_SUBSCRIPTION(HttpStatus.CONFLICT, false, 4503, "이미 취소된 구독입니다."),
 
     /**
      * Request 유효성 에러
