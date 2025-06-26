@@ -10,6 +10,7 @@ import back.vybz.paymentservice.subscription.dto.response.ResponseBillingKeyDto;
 import back.vybz.paymentservice.subscription.vo.request.RequestSubscriptionCancelVo;
 import back.vybz.paymentservice.subscription.vo.request.RequestSubscriptionCreateVo;
 import back.vybz.paymentservice.subscription.vo.request.RequestSubscriptionExecuteVo;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class SubscriptionController {
     private final SubscriptionService membershipService;
 
     // billingKey 등록
+    @Operation(summary = "자동 결제를 위한 billingKey 발급 API", description = "자동 결제를 위한 billingKey 발급 API 입니다.", tags = {"Subscription-Service"})
     @PostMapping("/billing/register")
     public BaseResponseEntity<ResponseBillingKeyDto> issueBillingKey(
             @RequestBody RequestSubscriptionCreateVo requestSubscriptionCreateVo) {
@@ -35,6 +37,7 @@ public class SubscriptionController {
     }
 
     // billingKey 결제
+    @Operation(summary = "첫 자동 결제 API", description = "첫 자동 결제 API 입니다.", tags = {"Subscription-Service"})
     @PostMapping("/billing/execute")
     public BaseResponseEntity<Void> executeBillingPayment (
             @RequestBody RequestSubscriptionExecuteVo requestSubscriptionExecuteVo
@@ -45,6 +48,7 @@ public class SubscriptionController {
         return new BaseResponseEntity<>(BaseResponseStatus.SUCCESS);
     }
 
+    @Operation(summary = "자동 결제 해지 API", description = "자동 결제 해지 API 입니다.", tags = {"Subscription-Service"})
     @DeleteMapping
     public BaseResponseEntity<Void> cancelBillingPayment(
             @RequestBody RequestSubscriptionCancelVo requestSubscriptionCancelVo

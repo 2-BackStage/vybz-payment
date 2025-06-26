@@ -38,8 +38,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
 
-    private final SubscriptionRepository membershipRepository;
-
     private final PaymentRepository paymentRepository;
 
     private final TossHeaderHelper tossHeaderHelper;
@@ -87,7 +85,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .subscriptionStatus(SubscriptionStatus.READY)
                 .build();
 
-        membershipRepository.save(subscription);
+        subscriptionRepository.save(subscription);
 
         log.info("🔥 발급된 billingKey: {}", billingKey);
 
@@ -98,7 +96,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public void executeBillingPayment(RequestSubscriptionExecuteDto requestSubscriptionExecuteDto) {
 
-        Subscription subscription = membershipRepository.findByCustomerKey(requestSubscriptionExecuteDto.getCustomerKey())
+        Subscription subscription = subscriptionRepository.findByCustomerKey(requestSubscriptionExecuteDto.getCustomerKey())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SUBSCRIPTION_NOT_FOUND));
 
         String orderId = UUID.randomUUID().toString();
@@ -145,7 +143,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // 결제 성공한 경우
         subscription.activate();
-        membershipRepository.save(subscription);
+        subscriptionRepository.save(subscription);
 
         Payment successPayment = Payment.builder()
                 .userUuid(subscription.getUserUuid())
