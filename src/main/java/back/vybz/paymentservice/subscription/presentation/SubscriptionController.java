@@ -31,8 +31,6 @@ public class SubscriptionController {
 
         ResponseBillingKeyDto response = membershipService.registerBillingKey(RequestSubscriptionCreateDto.from(requestSubscriptionCreateVo));
 
-        log.info("✅ ResponseBillingKeyDto: {}", response);
-
         return new BaseResponseEntity<>(BaseResponseStatus.SUCCESS, response);
     }
 

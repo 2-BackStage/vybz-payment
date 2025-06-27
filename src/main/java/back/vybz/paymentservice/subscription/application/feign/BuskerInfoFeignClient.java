@@ -1,7 +1,7 @@
 package back.vybz.paymentservice.subscription.application.feign;
 
 import back.vybz.paymentservice.common.entity.BaseResponseEntity;
-import back.vybz.paymentservice.subscription.vo.respomse.ResponseBuskerProfileVo;
+import back.vybz.paymentservice.subscription.vo.response.ResponseBuskerProfileVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

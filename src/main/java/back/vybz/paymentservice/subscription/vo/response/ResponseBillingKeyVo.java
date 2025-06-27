@@ -1,4 +1,4 @@
-package back.vybz.paymentservice.subscription.vo.respomse;
+package back.vybz.paymentservice.subscription.vo.response;
 
 import lombok.Builder;
 import lombok.Getter;
