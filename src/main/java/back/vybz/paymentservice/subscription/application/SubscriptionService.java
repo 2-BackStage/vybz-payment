@@ -9,7 +9,7 @@ public interface SubscriptionService {
 
     ResponseBillingKeyDto registerBillingKey(RequestSubscriptionCreateDto requestSubscriptionCreateDto);
 
-     void executeBillingPayment(RequestSubscriptionExecuteDto requestSubscriptionExecuteDto);
+    void executeBillingPayment(RequestSubscriptionExecuteDto requestSubscriptionExecuteDto);
 
-     void cancelSubscription(RequestSubscriptionCancelDto requestSubscriptionCancelDto);
+    void cancelSubscription(RequestSubscriptionCancelDto requestSubscriptionCancelDto);
 }
