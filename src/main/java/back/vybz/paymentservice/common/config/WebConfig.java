@@ -11,7 +11,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**") // 모든 경로 허용
                 .allowedOrigins("http://localhost:3000", "https://vybz.kr", "https://www.vybz.kr")
                 .allowedMethods("*")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowedHeaders("*");
     }
 }

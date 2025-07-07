@@ -307,8 +307,8 @@ public class PaymentServiceImpl implements PaymentService {
                 Sort.by(Sort.Direction.DESC, "approvedAt")
         );
 
-        Page<Payment> pageResult = paymentRepository.findByUserUuidAndPaymentStatusAndApprovedAtIsNotNull(
-                userUuid, PaymentStatus.DONE, pageable
+        Page<Payment> pageResult = paymentRepository.findByUserUuidAndPaymentStatusAndPaymentTypeAndApprovedAtIsNotNull(
+                userUuid, PaymentStatus.DONE, PaymentType.CHARGE, pageable
         );
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
