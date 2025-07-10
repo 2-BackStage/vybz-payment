@@ -128,7 +128,7 @@ src/main/java/back/vybz/paymentservice/
 
 Swagger UI를 통해 API 문서를 확인할 수 있습니다:
 
--   **URL**: `http://localhost:8080/payment-service/swagger-ui/index.html`
+-   **URL**: `http://localhost:8000/payment-service/swagger-ui/index.html`
 -   **API 그룹**:
     -   Payment-Service: 결제 관련 API
     -   Subscription-Service: 구독 관련 API
